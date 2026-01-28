@@ -7,7 +7,6 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        /* Your existing CSS styles here - keeping them the same */
         * {
             margin: 0;
             padding: 0;
@@ -62,12 +61,14 @@
 
         .modal-content {
             background-color: white;
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 30px;
             border-radius: 15px;
             width: 90%;
             max-width: 500px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal h2 {
@@ -87,7 +88,7 @@
             color: #333;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -96,9 +97,14 @@
             transition: border-color 0.3s ease;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: #ff6b35;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
         }
 
         .btn {
@@ -121,6 +127,13 @@
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
 
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .user-info {
             background: white;
             padding: 15px;
@@ -135,7 +148,6 @@
             margin-bottom: 10px;
         }
 
-        /* Add all your existing game styles here... */
         .nav-buttons {
             display: flex;
             justify-content: center;
@@ -185,8 +197,385 @@
             font-size: 2.5em;
         }
 
-        /* Add the rest of your existing styles... */
-        /* I'm keeping this short for readability, but include ALL your existing CSS */
+        /* Word Search Styles */
+        .word-search-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 35px);
+            grid-template-rows: repeat(15, 35px);
+            gap: 2px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+        }
+
+        .grid-cell {
+            width: 35px;
+            height: 35px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            border: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .grid-cell:hover {
+            background: #fff3f0;
+            border-color: #ff6b35;
+        }
+
+        .grid-cell.found {
+            background: #ff6b35 !important;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .word-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 250px;
+            border: 2px solid #ff6b35;
+        }
+
+        .word-list h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ff6b35;
+        }
+
+        .word-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .word-item.found {
+            background: #ff6b35;
+            color: white;
+            text-decoration: line-through;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ff6b35;
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option:hover {
+            background: #fff3f0;
+            border-color: #ff6b35;
+        }
+
+        .option.correct {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .option.incorrect {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+        .quiz-stats {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        /* Container Types Styles */
+        .container-game {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .container-types, .container-descriptions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 350px;
+            border: 2px solid #ff6b35;
+        }
+
+        .container-types h3, .container-descriptions h3 {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .container-item, .description-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e0e0e0;
+        }
+
+        .container-item:hover, .description-item:hover {
+            background: #fff3f0;
+            border-color: #ff6b35;
+        }
+
+        .container-item.selected, .description-item.selected {
+            border-color: #ff6b35;
+            background: #fff3f0;
+        }
+
+        .container-item.matched, .description-item.matched {
+            background: #28a745;
+            color: white;
+            cursor: default;
+            border-color: #28a745;
+        }
+
+        /* Management Styles - Hidden by default */
+        .management-section {
+            display: none;
+        }
+
+        .admin-login {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ff6b35;
+            z-index: 1000;
+        }
+
+        .admin-login input {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .admin-login button {
+            padding: 8px 16px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .admin-login button:hover {
+            background: #e55a2b;
+        }
+
+        .management-content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .management-panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 400px;
+            border: 2px solid #ff6b35;
+        }
+
+        .management-panel h3 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+
+        .item-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .list-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #ff6b35;
+        }
+
+        .instructions h3 {
+            margin-bottom: 15px;
+            color: #ff6b35;
+        }
+
+        .instructions ul {
+            list-style-position: inside;
+            color: #333;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* Game Instructions */
+        .game-instructions {
+            text-align: center;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+        }
+
+        .game-instructions p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .game-instructions strong {
+            color: #ff6b35;
+        }
+
+        /* Stats styling */
+        .game-stats {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .word-search-container, .container-game {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .management-content {
+                flex-direction: column;
+            }
+
+            .word-grid {
+                grid-template-columns: repeat(15, 25px);
+                grid-template-rows: repeat(15, 25px);
+            }
+
+            .grid-cell {
+                width: 25px;
+                height: 25px;
+                font-size: 0.8em;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .admin-login {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+            }
+
+            .modal-content {
+                margin: 2% auto;
+                width: 95%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -213,13 +602,21 @@
                     <option value="Operations">Operations</option>
                     <option value="Commercial">Commercial</option>
                     <option value="Finance & Accounting">Finance & Accounting</option>
-                    <option value="IT">Information Technology</option>
+                    <option value="Information Technology">Information Technology</option>
                     <option value="Human Resources">Human Resources</option>
                     <option value="Legal">Legal</option>
                     <option value="Procurement">Procurement</option>
                     <option value="Fleet Management">Fleet Management</option>
                     <option value="Customer Service">Customer Service</option>
                     <option value="Sales">Sales</option>
+                    <option value="Trade Management">Trade Management</option>
+                    <option value="Network & Operations">Network & Operations</option>
+                    <option value="Terminal Operations">Terminal Operations</option>
+                    <option value="Equipment Management">Equipment Management</option>
+                    <option value="Marine Operations">Marine Operations</option>
+                    <option value="Controlling">Controlling</option>
+                    <option value="Corporate Development">Corporate Development</option>
+                    <option value="Compliance">Compliance</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -240,6 +637,12 @@
         </div>
     </div>
 
+    <!-- Admin Login -->
+    <div class="admin-login">
+        <input type="password" id="adminPassword" placeholder="Admin Password">
+        <button onclick="checkAdminAccess()">Admin</button>
+    </div>
+
     <div class="container">
         <!-- User Info Display -->
         <div id="userInfo" class="user-info" style="display: none;">
@@ -253,16 +656,174 @@
             <p>Interactive Learning Platform for Maritime Excellence</p>
         </div>
 
-        <!-- Your existing navigation and games go here -->
         <div class="nav-buttons">
             <button class="nav-btn active" onclick="showGame('wordSearch')">🔍 Word Search</button>
             <button class="nav-btn" onclick="showGame('quiz')">📚 Shipping Quiz</button>
             <button class="nav-btn" onclick="showGame('containerTypes')">📦 Container Types</button>
         </div>
 
-        <!-- Add all your existing game sections here... -->
-        <!-- I'm keeping this short, but include ALL your existing game HTML -->
-        
+        <!-- Word Search Game -->
+        <div id="wordSearch" class="game-section active">
+            <h2>🔍 Shipping Terms Word Search</h2>
+            
+            <div class="game-instructions">
+                <p><strong>How to Play:</strong></p>
+                <p>• Click and drag from the first letter to the last letter of a word</p>
+                <p>• Words can be horizontal, vertical, or diagonal</p>
+                <p>• Found words will be highlighted in orange</p>
+                <p>• Find all the shipping terms listed on the right!</p>
+            </div>
+
+            <div class="word-search-container">
+                <div class="grid-container">
+                    <div id="wordGrid" class="word-grid"></div>
+                    <button onclick="initWordSearch()" class="btn">🔄 New Game</button>
+                </div>
+                
+                <div class="word-list">
+                    <h3>Find these words:</h3>
+                    <div id="wordList"></div>
+                    <div class="game-stats">
+                        Words Found: <span id="wordsFound">0</span> / <span id="totalWords">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Game -->
+        <div id="quiz" class="game-section">
+            <h2>📚 Shipping Knowledge Quiz</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-stats">
+                    <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></span>
+                    <span style="margin-left: 20px;">Score: <span id="quizScore">0</span></span>
+                </div>
+                
+                <div id="questionContainer" class="question-container">
+                    <div id="questionText" class="question"></div>
+                    <div id="optionsContainer" class="options"></div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button id="startQuizBtn" onclick="startQuiz()" class="btn">🚀 Start Quiz</button>
+                    <button id="nextQuestionBtn" onclick="nextQuestion()" class="btn" style="display: none;">➡️ Next Question</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container Types Game -->
+        <div id="containerTypes" class="game-section">
+            <h2>📦 Container Type Matching</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">Match container types with their descriptions</p>
+            
+            <div class="container-game">
+                <div class="container-types">
+                    <h3>Container Types</h3>
+                    <div id="containerTypesList"></div>
+                </div>
+                
+                <div class="container-descriptions">
+                    <h3>Descriptions</h3>
+                    <div id="containerDescriptionsList"></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <div class="game-stats">
+                    Matches: <span id="containerMatches">0</span> / 6
+                </div>
+                <button onclick="initContainerGame()" class="btn">🔄 New Game</button>
+            </div>
+        </div>
+
+        <!-- Management Section (Hidden) -->
+        <div id="management" class="game-section management-section">
+            <h2>⚙️ Content Management System</h2>
+            
+            <div class="management-content">
+                <!-- Quiz Questions Manager -->
+                <div class="management-panel">
+                    <h3>📚 Quiz Questions Manager</h3>
+                    
+                    <div class="form-group">
+                        <label>Question:</label>
+                        <textarea id="newQuestion" placeholder="Enter your question here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Option A:</label>
+                        <input type="text" id="optionA" placeholder="Option A">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Option B:</label>
+                        <input type="text" id="optionB" placeholder="Option B">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Option C:</label>
+                        <input type="text" id="optionC" placeholder="Option C">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Option D:</label>
+                        <input type="text" id="optionD" placeholder="Option D">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Correct Answer:</label>
+                        <select id="correctAnswer">
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="addQuestion()" class="btn">➕ Add Question</button>
+                    <button onclick="exportQuestions()" class="btn">📥 Export Questions</button>
+                    
+                    <div class="item-list" id="questionsList">
+                        <strong>Current Questions:</strong>
+                    </div>
+                </div>
+
+                <!-- Word Search Terms Manager -->
+                <div class="management-panel">
+                    <h3>🔍 Word Search Terms Manager</h3>
+                    
+                    <div class="form-group">
+                        <label>Shipping Term:</label>
+                        <input type="text" id="newTerm" placeholder="Enter shipping term (uppercase)" style="text-transform: uppercase;">
+                    </div>
+                    
+                    <button onclick="addTerm()" class="btn">➕ Add Term</button>
+                    <button onclick="exportTerms()" class="btn">📥 Export Terms</button>
+                    
+                    <div class="item-list" id="termsList">
+                        <strong>Current Terms:</strong>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Import Data:</label>
+                        <input type="file" id="importFile" accept=".json">
+                        <button onclick="importData()" class="btn">📤 Import Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>📋 Management Instructions:</h3>
+                <ul>
+                    <li><strong>Add Questions:</strong> Fill in all fields and select the correct answer</li>
+                    <li><strong>Add Terms:</strong> Enter shipping terms in uppercase letters</li>
+                    <li><strong>Export:</strong> Download your data as JSON files for backup</li>
+                    <li><strong>Import:</strong> Upload previously exported JSON files to restore data</li>
+                    <li><strong>Delete:</strong> Click the red delete button next to any item to remove it</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -322,6 +883,8 @@
             initWordSearch();
             initContainerGame();
             updateQuizStats();
+            displayQuestions();
+            displayTerms();
         }
 
         function changeUser() {
@@ -346,7 +909,12 @@
                 location: currentUser.location,
                 user_email: currentUser.email,
                 registration_time: new Date(currentUser.registrationTime).toLocaleString(),
-                message_type: 'User Registration'
+                message_type: 'User Registration',
+                game_type: 'Registration',
+                score: 'N/A',
+                total_questions: 'N/A',
+                percentage: 'N/A',
+                completed_at: new Date().toLocaleString()
             };
 
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
@@ -378,7 +946,8 @@
                 total_questions: totalQuestions || 'N/A',
                 percentage: totalQuestions ? Math.round((score / totalQuestions) * 100) + '%' : 'N/A',
                 completed_at: new Date().toLocaleString(),
-                message_type: 'Game Score'
+                message_type: 'Game Score',
+                registration_time: new Date(currentUser.registrationTime).toLocaleString()
             };
 
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
@@ -389,7 +958,182 @@
                 });
         }
 
-        // Modified game completion functions
+        // Admin Access Control
+        function checkAdminAccess() {
+            const password = document.getElementById('adminPassword').value;
+            // Change this password to whatever you want
+            if (password === 'HapagAdmin2024') {
+                document.querySelector('.management-section').style.display = 'block';
+                document.querySelector('.admin-login').style.display = 'none';
+                // Add management button to navigation
+                const navButtons = document.querySelector('.nav-buttons');
+                const managementBtn = document.createElement('button');
+                managementBtn.className = 'nav-btn';
+                managementBtn.onclick = () => showGame('management');
+                managementBtn.innerHTML = '⚙️ Management';
+                navButtons.appendChild(managementBtn);
+                alert('Admin access granted!');
+            } else {
+                alert('Invalid password!');
+            }
+        }
+
+        // Game Navigation
+        function showGame(gameId) {
+            // Hide all games
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected game
+            document.getElementById(gameId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Default quiz questions
+        let quizQuestions = [
+            {
+                question: "What does TEU stand for in shipping?",
+                options: ["Twenty-foot Equivalent Unit", "Total Equipment Unit", "Transport Equipment Unit", "Terminal Equipment Unit"],
+                correct: "A"
+            },
+            {
+                question: "Which document serves as a receipt for goods and a contract of carriage?",
+                options: ["Commercial Invoice", "Packing List", "Bill of Lading", "Certificate of Origin"],
+                correct: "C"
+            },
+            {
+                question: "What is the maximum gross weight typically allowed for a 20ft container?",
+                options: ["24,000 kg", "30,480 kg", "26,580 kg", "28,200 kg"],
+                correct: "B"
+            },
+            {
+                question: "What does FOB stand for in shipping terms?",
+                options: ["Free on Board", "Freight on Board", "Full of Bulk", "Forward Operating Base"],
+                correct: "A"
+            },
+            {
+                question: "Which port is known as the world's busiest container port?",
+                options: ["Rotterdam", "Los Angeles", "Shanghai", "Singapore"],
+                correct: "C"
+            },
+            {
+                question: "What is the standard height of a regular container?",
+                options: ["8 feet", "8.5 feet", "9 feet", "9.5 feet"],
+                correct: "B"
+            },
+            {
+                question: "What does CFS stand for in shipping?",
+                options: ["Container Freight Station", "Cargo Forwarding Service", "Container Filing System", "Customs Filing Station"],
+                correct: "A"
+            },
+            {
+                question: "Which Incoterm means the seller delivers when goods are placed at buyer's disposal?",
+                options: ["FOB", "CIF", "DAP", "EXW"],
+                correct: "D"
+            },
+            {
+                question: "What is a reefer container used for?",
+                options: ["Heavy cargo", "Liquid cargo", "Temperature-controlled cargo", "Oversized cargo"],
+                correct: "C"
+            },
+            {
+                question: "What does LCL stand for?",
+                options: ["Less than Container Load", "Large Container Load", "Limited Container Load", "Local Container Load"],
+                correct: "A"
+            }
+        ];
+
+        // Default word search terms
+        let wordSearchTerms = [
+            "CONTAINER", "SHIPPING", "CARGO", "PORT", "VESSEL", "FREIGHT", 
+            "LOGISTICS", "TERMINAL", "DOCK", "CRANE", "MANIFEST", "CUSTOMS",
+            "BERTH", "STEVEDORE", "LASHING", "HATCH", "GANGWAY", "BOLLARD"
+        ];
+
+        // Quiz Game Logic
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let quizActive = false;
+
+        function startQuiz() {
+            if (!currentUser) {
+                alert('Please register first to play the quiz!');
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            quizActive = true;
+            
+            document.getElementById('startQuizBtn').style.display = 'none';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            
+            updateQuizStats();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionElement.onclick = () => selectAnswer(String.fromCharCode(65 + index), optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectAnswer(selectedAnswer, optionElement) {
+            if (!quizActive) return;
+            
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+                if (option.textContent.startsWith(question.correct)) {
+                    option.classList.add('correct');
+                }
+            });
+            
+            if (selectedAnswer === question.correct) {
+                quizScore++;
+                optionElement.classList.add('correct');
+            } else {
+                optionElement.classList.add('incorrect');
+            }
+            
+            updateQuizStats();
+            
+            setTimeout(() => {
+                document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            showQuestion();
+        }
+
         function endQuiz() {
             quizActive = false;
             const percentage = Math.round((quizScore / quizQuestions.length) * 100);
@@ -409,6 +1153,226 @@
             document.getElementById('startQuizBtn').textContent = '🔄 Try Again';
         }
 
+        function updateQuizStats() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = quizQuestions.length;
+            document.getElementById('quizScore').textContent = quizScore;
+        }
+
+        // Word Search Game Logic
+        let wordGrid = [];
+        let foundWords = [];
+        let isSelecting = false;
+        let startCell = null;
+        let selectedCells = [];
+
+        function initWordSearch() {
+            if (!currentUser) {
+                alert('Please register first to play the word search!');
+                return;
+            }
+
+            foundWords = [];
+            createGrid();
+            placeWords();
+            fillEmptySpaces();
+            displayGrid();
+            displayWordList();
+            updateWordSearchStats();
+        }
+
+        function createGrid() {
+            wordGrid = [];
+            for (let i = 0; i < 15; i++) {
+                wordGrid[i] = [];
+                for (let j = 0; j < 15; j++) {
+                    wordGrid[i][j] = '';
+                }
+            }
+        }
+
+        function placeWords() {
+            const directions = [
+                [0, 1],   // horizontal
+                [1, 0],   // vertical
+                [1, 1],   // diagonal down-right
+                [-1, 1],  // diagonal up-right
+                [0, -1],  // horizontal backwards
+                [-1, 0],  // vertical backwards
+                [-1, -1], // diagonal up-left
+                [1, -1]   // diagonal down-left
+            ];
+
+            wordSearchTerms.forEach(word => {
+                let placed = false;
+                let attempts = 0;
+                
+                while (!placed && attempts < 100) {
+                    const direction = directions[Math.floor(Math.random() * directions.length)];
+                    const startRow = Math.floor(Math.random() * 15);
+                    const startCol = Math.floor(Math.random() * 15);
+                    
+                    if (canPlaceWord(word, startRow, startCol, direction)) {
+                        placeWord(word, startRow, startCol, direction);
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
+        }
+
+        function canPlaceWord(word, row, col, direction) {
+            for (let i = 0; i < word.length; i++) {
+                const newRow = row + (direction[0] * i);
+                const newCol = col + (direction[1] * i);
+                
+                if (newRow < 0 || newRow >= 15 || newCol < 0 || newCol >= 15) {
+                    return false;
+                }
+                
+                if (wordGrid[newRow][newCol] !== '' && wordGrid[newRow][newCol] !== word[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function placeWord(word, row, col, direction) {
+            for (let i = 0; i < word.length; i++) {
+                const newRow = row + (direction[0] * i);
+                const newCol = col + (direction[1] * i);
+                wordGrid[newRow][newCol] = word[i];
+            }
+        }
+
+        function fillEmptySpaces() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (let i = 0; i < 15; i++) {
+                for (let j = 0; j < 15; j++) {
+                    if (wordGrid[i][j] === '') {
+                        wordGrid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                }
+            }
+        }
+
+        function displayGrid() {
+            const gridElement = document.getElementById('wordGrid');
+            gridElement.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                for (let j = 0; j < 15; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.textContent = wordGrid[i][j];
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    cell.addEventListener('mousedown', startSelection);
+                    cell.addEventListener('mouseenter', continueSelection);
+                    cell.addEventListener('mouseup', endSelection);
+                    
+                    gridElement.appendChild(cell);
+                }
+            }
+        }
+
+        function startSelection(e) {
+            isSelecting = true;
+            startCell = e.target;
+            selectedCells = [e.target];
+            e.target.style.background = 'rgba(255,107,53,0.5)';
+        }
+
+        function continueSelection(e) {
+            if (!isSelecting) return;
+            
+            // Clear previous selection
+            selectedCells.forEach(cell => {
+                if (!cell.classList.contains('found')) {
+                    cell.style.background = 'white';
+                }
+            });
+            
+            selectedCells = getCellsInLine(startCell, e.target);
+            selectedCells.forEach(cell => {
+                if (!cell.classList.contains('found')) {
+                    cell.style.background = 'rgba(255,107,53,0.5)';
+                }
+            });
+        }
+
+        function endSelection() {
+            if (!isSelecting) return;
+            isSelecting = false;
+            
+            const selectedWord = selectedCells.map(cell => cell.textContent).join('');
+            const reversedWord = selectedWord.split('').reverse().join('');
+            
+            if (wordSearchTerms.includes(selectedWord) && !foundWords.includes(selectedWord)) {
+                foundWords.push(selectedWord);
+                selectedCells.forEach(cell => cell.classList.add('found'));
+                updateWordSearchStats();
+            } else if (wordSearchTerms.includes(reversedWord) && !foundWords.includes(reversedWord)) {
+                foundWords.push(reversedWord);
+                selectedCells.forEach(cell => cell.classList.add('found'));
+                updateWordSearchStats();
+            } else {
+                selectedCells.forEach(cell => {
+                    if (!cell.classList.contains('found')) {
+                        cell.style.background = 'white';
+                    }
+                });
+            }
+            
+            selectedCells = [];
+            startCell = null;
+        }
+
+        function getCellsInLine(start, end) {
+            const startRow = parseInt(start.dataset.row);
+            const startCol = parseInt(start.dataset.col);
+            const endRow = parseInt(end.dataset.row);
+            const endCol = parseInt(end.dataset.col);
+            
+            const cells = [];
+            const rowDiff = endRow - startRow;
+            const colDiff = endCol - startCol;
+            
+            // Check if it's a valid line (horizontal, vertical, or diagonal)
+            if (rowDiff === 0 || colDiff === 0 || Math.abs(rowDiff) === Math.abs(colDiff)) {
+                const steps = Math.max(Math.abs(rowDiff), Math.abs(colDiff));
+                const rowStep = steps === 0 ? 0 : rowDiff / steps;
+                const colStep = steps === 0 ? 0 : colDiff / steps;
+                
+                for (let i = 0; i <= steps; i++) {
+                    const row = startRow + (rowStep * i);
+                    const col = startCol + (colStep * i);
+                    const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    if (cell) cells.push(cell);
+                }
+            }
+            
+            return cells;
+        }
+
+        function displayWordList() {
+            const wordListElement = document.getElementById('wordList');
+            wordListElement.innerHTML = '';
+            
+            wordSearchTerms.forEach(word => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item';
+                wordElement.textContent = word;
+                
+                if (foundWords.includes(word)) {
+                    wordElement.classList.add('found');
+                }
+                
+                wordListElement.appendChild(wordElement);
+            });
+        }
+
         function updateWordSearchStats() {
             document.getElementById('wordsFound').textContent = foundWords.length;
             document.getElementById('totalWords').textContent = wordSearchTerms.length;
@@ -424,21 +1388,290 @@
             }
         }
 
-        function updateContainerStats() {
-            document.getElementById('containerMatches').textContent = containerMatches;
+        // Container Types Game Logic
+        const containerData = [
+            { type: "Dry Container", description: "Standard container for general cargo, dry goods, and non-perishable items" },
+            { type: "Reefer Container", description: "Refrigerated container for temperature-sensitive cargo like food and pharmaceuticals" },
+            { type: "Open Top Container", description: "Container with removable top for oversized cargo that cannot fit through doors" },
+            { type: "Flat Rack Container", description: "Container with collapsible sides for heavy machinery and oversized equipment" },
+            { type: "Tank Container", description: "Specialized container for liquid cargo, chemicals, and bulk liquids" },
+            { type: "High Cube Container", description: "Taller version of standard container providing extra vertical space" }
+        ];
+
+        let selectedContainerType = null;
+        let selectedDescription = null;
+        let containerMatches = 0;
+
+        function initContainerGame() {
+            if (!currentUser) {
+                alert('Please register first to play the container matching game!');
+                return;
+            }
+
+            selectedContainerType = null;
+            selectedDescription = null;
+            containerMatches = 0;
             
-            if (containerMatches === containerData.length) {
-                // Send completion email
-                sendScoreEmail('Container Matching', containerMatches, containerData.length);
+            // Shuffle the arrays
+            const shuffledTypes = [...containerData].sort(() => Math.random() - 0.5);
+            const shuffledDescriptions = [...containerData].sort(() => Math.random() - 0.5);
+            
+            displayContainerTypes(shuffledTypes);
+            displayContainerDescriptions(shuffledDescriptions);
+            updateContainerStats();
+        }
+
+        function displayContainerTypes(types) {
+            const container = document.getElementById('containerTypesList');
+            container.innerHTML = '';
+            
+            types.forEach((item, index) => {
+                const element = document.createElement('div');
+                element.className = 'container-item';
+                element.textContent = item.type;
+                element.dataset.type = item.type;
+                element.onclick = () => selectContainerType(element);
+                container.appendChild(element);
+            });
+        }
+
+        function displayContainerDescriptions(descriptions) {
+            const container = document.getElementById('containerDescriptionsList');
+            container.innerHTML = '';
+            
+            descriptions.forEach((item, index) => {
+                const element = document.createElement('div');
+                element.className = 'description-item';
+                element.textContent = item.description;
+                element.dataset.type = item.type;
+                element.onclick = () => selectDescription(element);
+                container.appendChild(element);
+            });
+        }
+
+        function selectContainerType(element) {
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous selection
+            document.querySelectorAll('.container-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            selectedContainerType = element;
+            element.classList.add('selected');
+            
+            checkContainerMatch();
+        }
+
+        function selectDescription(element) {
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous selection
+            document.querySelectorAll('.description-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            selectedDescription = element;
+            element.classList.add('selected');
+            
+            checkContainerMatch();
+        }
+
+        function checkContainerMatch() {
+            if (selectedContainerType && selectedDescription) {
+                if (selectedContainerType.dataset.type === selectedDescription.dataset.type) {
+                    // Match found
+                    selectedContainerType.classList.add('matched');
+                    selectedDescription.classList.add('matched');
+                    selectedContainerType.classList.remove('selected');
+                    selectedDescription.classList.remove('selected');
+                    
+                    containerMatches++;
+                    updateContainerStats();
+                    
+                    if (containerMatches === containerData.length) {
+                        // Send completion email
+                        sendScoreEmail('Container Matching', containerMatches, containerData.length);
+                        
+                        setTimeout(() => {
+                            alert('Congratulations! You matched all container types! 🎉\n\nYour completion has been recorded.');
+                        }, 500);
+                    }
+                } else {
+                    // No match - clear selections after a brief delay
+                    setTimeout(() => {
+                        selectedContainerType.classList.remove('selected');
+                        selectedDescription.classList.remove('selected');
+                    }, 1000);
+                }
                 
-                setTimeout(() => {
-                    alert('Congratulations! You matched all container types! 🎉\n\nYour completion has been recorded.');
-                }, 500);
+                selectedContainerType = null;
+                selectedDescription = null;
             }
         }
 
-        // Add all your existing game logic here...
-        // (Include all the existing JavaScript functions)
+        function updateContainerStats() {
+            document.getElementById('containerMatches').textContent = containerMatches;
+        }
+
+        // Management Functions
+        function addQuestion() {
+            const question = document.getElementById('newQuestion').value.trim();
+            const optionA = document.getElementById('optionA').value.trim();
+            const optionB = document.getElementById('optionB').value.trim();
+            const optionC = document.getElementById('optionC').value.trim();
+            const optionD = document.getElementById('optionD').value.trim();
+            const correct = document.getElementById('correctAnswer').value;
+            
+            if (!question || !optionA || !optionB || !optionC || !optionD) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const newQuestion = {
+                question: question,
+                options: [optionA, optionB, optionC, optionD],
+                correct: correct
+            };
+            
+            quizQuestions.push(newQuestion);
+            displayQuestions();
+            clearQuestionForm();
+            
+            alert('Question added successfully!');
+        }
+
+        function addTerm() {
+            const term = document.getElementById('newTerm').value.trim().toUpperCase();
+            
+            if (!term) {
+                alert('Please enter a term');
+                return;
+            }
+            
+            if (wordSearchTerms.includes(term)) {
+                alert('Term already exists');
+                return;
+            }
+            
+            wordSearchTerms.push(term);
+            displayTerms();
+            document.getElementById('newTerm').value = '';
+            
+            alert('Term added successfully!');
+        }
+
+        function displayQuestions() {
+            const container = document.getElementById('questionsList');
+            container.innerHTML = '<strong>Current Questions:</strong>';
+            
+            quizQuestions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <span>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</span>
+                    <button class="delete-btn" onclick="deleteQuestion(${index})">Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function displayTerms() {
+            const container = document.getElementById('termsList');
+            container.innerHTML = '<strong>Current Terms:</strong>';
+            
+            wordSearchTerms.forEach((term, index) => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <span>${term}</span>
+                    <button class="delete-btn" onclick="deleteTerm(${index})">Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function deleteQuestion(index) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                quizQuestions.splice(index, 1);
+                displayQuestions();
+            }
+        }
+
+        function deleteTerm(index) {
+            if (confirm('Are you sure you want to delete this term?')) {
+                wordSearchTerms.splice(index, 1);
+                displayTerms();
+            }
+        }
+
+        function clearQuestionForm() {
+            document.getElementById('newQuestion').value = '';
+            document.getElementById('optionA').value = '';
+            document.getElementById('optionB').value = '';
+            document.getElementById('optionC').value = '';
+            document.getElementById('optionD').value = '';
+            document.getElementById('correctAnswer').value = 'A';
+        }
+
+        function exportQuestions() {
+            const dataStr = JSON.stringify(quizQuestions, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'hapag-lloyd-quiz-questions.json';
+            link.click();
+        }
+
+        function exportTerms() {
+            const dataStr = JSON.stringify(wordSearchTerms, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'hapag-lloyd-word-search-terms.json';
+            link.click();
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file to import');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (Array.isArray(data)) {
+                        if (data.length > 0 && typeof data[0] === 'string') {
+                            // Word search terms
+                            wordSearchTerms = data;
+                            displayTerms();
+                            alert('Word search terms imported successfully!');
+                        } else if (data.length > 0 && data[0].question) {
+                            // Quiz questions
+                            quizQuestions = data;
+                            displayQuestions();
+                            alert('Quiz questions imported successfully!');
+                        }
+                    }
+                } catch (error) {
+                    alert('Error importing file: Invalid JSON format');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Initialize games on page load (after user registration)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Games will be initialized after user registration
+        });
     </script>
 </body>
 </html>
