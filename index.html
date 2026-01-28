@@ -410,6 +410,22 @@
             font-weight: 600;
         }
 
+        .email-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .email-status.error {
+            background: #dc3545;
+        }
+
         @media (max-width: 768px) {
             .word-search-container, .container-game {
                 flex-direction: column;
@@ -444,6 +460,9 @@
     </style>
 </head>
 <body>
+    <!-- Email Status Notification -->
+    <div id="emailStatus" class="email-status"></div>
+
     <!-- User Registration Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
@@ -474,6 +493,14 @@
                     <option value="Fleet Management">Fleet Management</option>
                     <option value="Customer Service">Customer Service</option>
                     <option value="Sales">Sales</option>
+                    <option value="Trade Management">Trade Management</option>
+                    <option value="Network & Operations">Network & Operations</option>
+                    <option value="Terminal Operations">Terminal Operations</option>
+                    <option value="Equipment Management">Equipment Management</option>
+                    <option value="Marine Operations">Marine Operations</option>
+                    <option value="Controlling">Controlling</option>
+                    <option value="Corporate Development">Corporate Development</option>
+                    <option value="Compliance">Compliance</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -590,6 +617,11 @@
     </div>
 
     <script>
+        // EmailJS Configuration with YOUR details
+        (function(){
+            emailjs.init("OCTRr32_6u6Rdn8cF"); // Your User ID
+        })();
+
         // User Management
         let currentUser = null;
 
@@ -597,6 +629,17 @@
         window.onload = function() {
             document.getElementById('userModal').style.display = 'block';
         };
+
+        function showEmailStatus(message, isError = false) {
+            const statusDiv = document.getElementById('emailStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'email-status error' : 'email-status';
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
 
         function registerUser() {
             const name = document.getElementById('userName').value.trim();
@@ -634,7 +677,7 @@
             document.getElementById('displayDepartment').textContent = department;
             document.getElementById('displayLocation').textContent = location;
 
-            // Send registration email (will work when EmailJS is configured)
+            // Send registration email
             sendRegistrationEmail();
 
             // Initialize games
@@ -657,13 +700,8 @@
         }
 
         function sendRegistrationEmail() {
-            // This will work when EmailJS is properly configured
-            console.log('Registration email would be sent for:', currentUser.name);
-            
-            // Uncomment and configure when EmailJS is set up:
-            /*
             const templateParams = {
-                to_email: 'your-email@hapag-lloyd.com',
+                to_email: 'shyam.mogal@hlag.com', // Your email
                 user_name: currentUser.name,
                 employee_id: currentUser.employeeId,
                 department: currentUser.department,
@@ -678,13 +716,14 @@
                 completed_at: new Date().toLocaleString()
             };
 
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            emailjs.send('service_3lj34h4', 'template_ne8t7th', templateParams) // Your Service ID and Template ID
                 .then(function(response) {
                     console.log('Registration email sent successfully!', response.status, response.text);
+                    showEmailStatus('✅ Registration email sent successfully!');
                 }, function(error) {
                     console.log('Failed to send registration email...', error);
+                    showEmailStatus('❌ Failed to send registration email', true);
                 });
-            */
         }
 
         function sendScoreEmail(gameType, score, totalQuestions = null) {
@@ -696,17 +735,8 @@
                 completedAt: new Date().toISOString()
             };
 
-            console.log('Score email would be sent:', {
-                user: currentUser.name,
-                game: gameType,
-                score: score,
-                total: totalQuestions
-            });
-
-            // Uncomment and configure when EmailJS is set up:
-            /*
             const templateParams = {
-                to_email: 'your-email@hapag-lloyd.com',
+                to_email: 'shyam.mogal@hlag.com', // Your email
                 user_name: currentUser.name,
                 employee_id: currentUser.employeeId,
                 department: currentUser.department,
@@ -721,13 +751,14 @@
                 registration_time: new Date(currentUser.registrationTime).toLocaleString()
             };
 
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            emailjs.send('service_3lj34h4', 'template_ne8t7th', templateParams) // Your Service ID and Template ID
                 .then(function(response) {
                     console.log('Score email sent successfully!', response.status, response.text);
+                    showEmailStatus('✅ Score email sent successfully!');
                 }, function(error) {
                     console.log('Failed to send score email...', error);
+                    showEmailStatus('❌ Failed to send score email', true);
                 });
-            */
         }
 
         // Game Navigation
@@ -775,13 +806,39 @@
                 question: "Which port is known as the world's busiest container port?",
                 options: ["Rotterdam", "Los Angeles", "Shanghai", "Singapore"],
                 correct: "C"
+            },
+            {
+                question: "What is the standard height of a regular container?",
+                options: ["8 feet", "8.5 feet", "9 feet", "9.5 feet"],
+                correct: "B"
+            },
+            {
+                question: "What does CFS stand for in shipping?",
+                options: ["Container Freight Station", "Cargo Forwarding Service", "Container Filing System", "Customs Filing Station"],
+                correct: "A"
+            },
+            {
+                question: "Which Incoterm means the seller delivers when goods are placed at buyer's disposal?",
+                options: ["FOB", "CIF", "DAP", "EXW"],
+                correct: "D"
+            },
+            {
+                question: "What is a reefer container used for?",
+                options: ["Heavy cargo", "Liquid cargo", "Temperature-controlled cargo", "Oversized cargo"],
+                correct: "C"
+            },
+            {
+                question: "What does LCL stand for?",
+                options: ["Less than Container Load", "Large Container Load", "Limited Container Load", "Local Container Load"],
+                correct: "A"
             }
         ];
 
         // Default word search terms
         let wordSearchTerms = [
             "CONTAINER", "SHIPPING", "CARGO", "PORT", "VESSEL", "FREIGHT", 
-            "LOGISTICS", "TERMINAL", "DOCK", "CRANE", "MANIFEST", "CUSTOMS"
+            "LOGISTICS", "TERMINAL", "DOCK", "CRANE", "MANIFEST", "CUSTOMS",
+            "BERTH", "STEVEDORE", "LASHING", "HATCH", "GANGWAY", "BOLLARD"
         ];
 
         // Quiz Game Logic
@@ -866,7 +923,7 @@
                 <h3>Quiz Complete!</h3>
                 <p>Your Score: ${quizScore} out of ${quizQuestions.length} (${percentage}%)</p>
                 <p>${percentage >= 80 ? 'Excellent work! 🎉' : percentage >= 60 ? 'Good job! 👍' : 'Keep studying! 📚'}</p>
-                <p style="color: #666; font-size: 0.9em; margin-top: 15px;">✅ Your score has been recorded.</p>
+                <p style="color: #666; font-size: 0.9em; margin-top: 15px;">✅ Your score has been recorded and emailed.</p>
             `;
             
             document.getElementById('optionsContainer').innerHTML = '';
@@ -1099,7 +1156,7 @@
                 sendScoreEmail('Word Search', foundWords.length, wordSearchTerms.length);
                 
                 setTimeout(() => {
-                    alert('Congratulations! You found all the words! 🎉\n\nYour completion has been recorded.');
+                    alert('Congratulations! You found all the words! 🎉\n\nYour completion has been recorded and emailed.');
                 }, 500);
             }
         }
@@ -1205,7 +1262,7 @@
                         sendScoreEmail('Container Matching', containerMatches, containerData.length);
                         
                         setTimeout(() => {
-                            alert('Congratulations! You matched all container types! 🎉\n\nYour completion has been recorded.');
+                            alert('Congratulations! You matched all container types! 🎉\n\nYour completion has been recorded and emailed.');
                         }, 500);
                     }
                 } else {
