@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Add this button somewhere in your HTML for testing -->
-<button onclick="testEmail()" style="background: red; color: white; padding: 10px;">🧪 Test Email</button>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -619,7 +617,7 @@
     </div>
 
     <script>
-        // EmailJS Configuration with YOUR details
+        // EmailJS Configuration with YOUR CORRECT details
         (function(){
             emailjs.init("OCTRr32_6u6Rdn8cF"); // Your User ID
         })();
@@ -718,7 +716,7 @@
                 completed_at: new Date().toLocaleString()
             };
 
-            emailjs.send('service_3lj34h4', 'template_ne8t7th', templateParams) // Your Service ID and Template ID
+            emailjs.send('service_8mzzftf', 'template_ne8t7th', templateParams) // CORRECT Service ID
                 .then(function(response) {
                     console.log('Registration email sent successfully!', response.status, response.text);
                     showEmailStatus('✅ Registration email sent successfully!');
@@ -753,7 +751,7 @@
                 registration_time: new Date(currentUser.registrationTime).toLocaleString()
             };
 
-            emailjs.send('service_3lj34h4', 'template_ne8t7th', templateParams) // Your Service ID and Template ID
+            emailjs.send('service_8mzzftf', 'template_ne8t7th', templateParams) // CORRECT Service ID
                 .then(function(response) {
                     console.log('Score email sent successfully!', response.status, response.text);
                     showEmailStatus('✅ Score email sent successfully!');
@@ -1283,38 +1281,6 @@
         function updateContainerStats() {
             document.getElementById('containerMatches').textContent = containerMatches;
         }
-
-        // Add this function to test EmailJS
-function testEmail() {
-    const testParams = {
-        to_email: 'shyam.mogal@hlag.com',
-        user_name: 'Test User',
-        employee_id: 'TEST123',
-        department: 'IT',
-        location: 'Hamburg',
-        user_email: 'test@test.com',
-        game_type: 'Test',
-        score: '5',
-        total_questions: '10',
-        percentage: '50%',
-        completed_at: new Date().toLocaleString(),
-        message_type: 'Test Email',
-        registration_time: new Date().toLocaleString()
-    };
-
-    console.log('Sending test email...');
-    
-    emailjs.send('service_3lj34h4', 'template_ne8t7th', testParams)
-        .then(function(response) {
-            console.log('✅ Test email sent successfully!', response);
-            alert('✅ Test email sent successfully!');
-        }, function(error) {
-            console.log('❌ Test email failed:', error);
-            alert('❌ Test email failed: ' + JSON.stringify(error));
-        });
-}
     </script>
 </body>
 </html>
-
-
